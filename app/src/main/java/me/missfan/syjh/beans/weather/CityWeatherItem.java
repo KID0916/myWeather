@@ -15,18 +15,29 @@ public class CityWeatherItem {
     private static final String TAG = "CityWeatherItem";
     //HeWeather data service 3.0 和风天气API
 
-    public CityWeatherItem(JSONObject aqiJson, JSONObject basicJson, JSONObject nowJson, JSONObject suggestionJson, JSONArray daily_forecastJson, JSONArray hourly_forecastJson) throws JSONException {
-        aqi = new AQI(aqiJson);
-        basic = new Basic(basicJson);
-        now = new Now(nowJson);
-        suggestion = new Suggestion(suggestionJson);
+    public CityWeatherItem(JSONObject aqiJson, JSONObject basicJson, JSONObject nowJson, JSONObject suggestionJson, JSONArray daily_forecastJson, JSONArray hourly_forecastJson) {
+        if (aqiJson != null)
+            try {
+                aqi = new AQI(aqiJson);
 
-        for (int i = 0; i < daily_forecastJson.length(); i++) {
-            dailyForecastList.add(new DailyForecast(daily_forecastJson.getJSONObject(i)));
-        }
-        for (int i = 0; i < hourly_forecastJson.length(); i++) {
-            hourlyForecastList.add(new HourlyForecast(hourly_forecastJson.getJSONObject(i)));
-        }
+                if (basicJson != null)
+                    basic = new Basic(basicJson);
+                if (nowJson != null)
+                    now = new Now(nowJson);
+                if (suggestionJson != null)
+                    suggestion = new Suggestion(suggestionJson);
+
+                if (daily_forecastJson != null)
+                    for (int i = 0; i < daily_forecastJson.length(); i++) {
+                        dailyForecastList.add(new DailyForecast(daily_forecastJson.getJSONObject(i)));
+                    }
+                if (hourly_forecastJson != null)
+                    for (int i = 0; i < hourly_forecastJson.length(); i++) {
+                        hourlyForecastList.add(new HourlyForecast(hourly_forecastJson.getJSONObject(i)));
+                    }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
     }
 
     private AQI aqi;

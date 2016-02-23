@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import me.missfan.syjh.CityListFetchr;
 import me.missfan.syjh.beans.CityItem;
 import me.missfan.syjh.R;
+import me.missfan.syjh.beans.weather.CityWeatherItem;
 
 public class CityListActivity extends AppCompatActivity {
 
@@ -58,9 +59,10 @@ public class CityListActivity extends AppCompatActivity {
             cityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    TextView cityname = (TextView)view;
+                    CityItem c = (CityItem)(parent.getAdapter()).getItem(position);
+                    String cityId = c.getId();
                     Intent i = new Intent(CityListActivity.this , CityWeatherActivity.class);
-                    i.putExtra("cityname", cityname.getText().toString());
+                    i.putExtra("cityId",cityId);
                     startActivity(i);
                 }
             });

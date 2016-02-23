@@ -40,7 +40,11 @@ public class JSONUtils {
     private Status status;
     private NetworkUtils networkUtils;
 
-    //JSON字符串 --> JSON文件
+    /*
+    *传入Context参数，字符串jsonStr和json文件名
+    *运行结果为将jsonStr字符串保存在JSON格式的文件中，返回为空
+    * JSON字符串 --> JSON文件
+    */
     public void writeJsonFiles(Context mContext, String jsonStr, String jsonFileName) {
         Writer writer = null;
         try {
@@ -62,7 +66,11 @@ public class JSONUtils {
 
     }
 
-    //JSON文件 --> JSON字符串  返回JSON字符串
+    /*
+    *从JSON文件中读出数据，传入参数为Context和JSON文件名
+    * 运行结果为返回JSON文件中的内容，以字符串的形式
+    * JSON文件 --> JSON字符串
+     */
     public String readJsonFiles(Context mContext, String jsonFileName) {
         String jsonStr = null;
         BufferedReader reader = null;
@@ -83,67 +91,90 @@ public class JSONUtils {
         return jsonStr;
     }
 
-
-        //从JSON文件中读取城市信息
-        public ArrayList<CityItem> readCityItemJsonFiles (Context mContext, String jsonFileName) {
-            ArrayList<CityItem> cityItems = new ArrayList<CityItem>();
-            String cityJsonStr = new String(readJsonFiles(mContext, jsonFileName));
-            Log.i(TAG, cityJsonStr);
-            try {
-                JSONTokener jsonTokener = new JSONTokener(cityJsonStr);
-                JSONObject testCity = (JSONObject) jsonTokener.nextValue();
-                JSONArray cityList = testCity.getJSONArray("city_info");
-                for (int i = 0; i < cityList.length(); i++) {
-                    JSONObject citytemp = cityList.getJSONObject(i);
-                    cityItems.add(new CityItem(citytemp));
-                }
-            } catch (JSONException e) {
-                Log.i(TAG, e.getMessage());
+    /*
+    *从JSON文件中读取城市列表信息，传入Context和JSON文件名
+    * 返回CityItem列表
+     */
+    public ArrayList<CityItem> readCityItemJsonFiles(Context mContext, String jsonFileName) {
+        ArrayList<CityItem> cityItems = new ArrayList<CityItem>();
+        String cityJsonStr = new String(readJsonFiles(mContext, jsonFileName));
+        Log.i(TAG, cityJsonStr);
+        try {
+            JSONTokener jsonTokener = new JSONTokener(cityJsonStr);
+            JSONObject testCity = (JSONObject) jsonTokener.nextValue();
+            JSONArray cityList = testCity.getJSONArray("city_info");
+            for (int i = 0; i < cityList.length(); i++) {
+                JSONObject citytemp = cityList.getJSONObject(i);
+                cityItems.add(new CityItem(citytemp));
             }
-            return cityItems;
+        } catch (JSONException e) {
+            Log.i(TAG, e.getMessage());
         }
-
-        //从JSON文件中读取城市天气信息 JSON文件 --> CityWeatherItem
-        public CityWeatherItem readCityWeatherItemFiles (Context mContext, String jsonFileName) {
-            CityWeatherItem cwi = null;
-            String cityWeatherJsonStr = new String(readJsonFiles(mContext, jsonFileName));
-            try {
-                JSONTokener jsonTokener = new JSONTokener(cityWeatherJsonStr);
-                JSONObject cityWeatherJsonObject = (JSONObject) jsonTokener.nextValue();
-
-                JSONArray weatherListJson = cityWeatherJsonObject.getJSONArray("HeWeather data service 3.0");
-                JSONObject weatherJson = weatherListJson.getJSONObject(0);
-                JSONObject aqiJson = weatherJson.getJSONObject("aqi");
-                JSONObject basicJson = weatherJson.getJSONObject("basic");
-                JSONObject nowJson = weatherJson.getJSONObject("now");
-                JSONObject suggestionJson = weatherJson.getJSONObject("suggestion");
-
-                JSONArray daily_forecastJson = weatherJson.getJSONArray("daily_forecast");
-                JSONArray hourly_forecastJson = weatherJson.getJSONArray("hourly_forecast");
-
-                cwi = new CityWeatherItem(aqiJson, basicJson, nowJson, suggestionJson, daily_forecastJson, hourly_forecastJson);
-            } catch (JSONException e) {
-                Log.i(TAG, e.getMessage());
-            }
-            return cwi;
-        }
-
-        //从JSON文件中读取天气代码信息
-        public ArrayList<WeatherCode> readWeatherCodeFiles (Context mContext, String jsonFileName) {
-            ArrayList<WeatherCode> weatherItems = new ArrayList<WeatherCode>();
-            String weatherJsonStr = new String(readJsonFiles(mContext, jsonFileName));
-            Log.i(TAG, weatherJsonStr);
-            try {
-                JSONTokener jsonTokener = new JSONTokener(weatherJsonStr);
-                JSONObject weatherJsonObject = (JSONObject) jsonTokener.nextValue();
-                JSONArray weatherList = weatherJsonObject.getJSONArray("cond_info");
-                for (int i = 0; i < weatherList.length(); i++) {
-                    JSONObject weathertemp = weatherList.getJSONObject(i);
-                    weatherItems.add(new WeatherCode(weathertemp));
-                }
-            } catch (JSONException e) {
-                Log.i(TAG, e.getMessage());
-            }
-            return weatherItems;
-        }
+        return cityItems;
     }
+
+
+    /*
+    *从JSON文件中读取城市天气信息，传入Context 和JSON格式文件名
+    * 分析JSON文件的内容，返回CityWeatherItem对象
+    * JSON文件 --> CityWeatherItem
+     */
+    public CityWeatherItem readCityWeatherItemFiles(Context mContext, String jsonFileName) {
+        CityWeatherItem cwi = null;
+        JSONObject aqiJson=null;
+        JSONObject basicJson=null;
+        JSONObject nowJson=null;
+        JSONObject  suggestionJson=null;
+        JSONArray daily_forecastJson=null;
+        JSONArray hourly_forecastJson=null;
+        String cityWeatherJsonStr = new String(readJsonFiles(mContext, jsonFileName));
+        try {
+            JSONTokener jsonTokener = new JSONTokener(cityWeatherJsonStr);
+            JSONObject cityWeatherJsonObject = (JSONObject) jsonTokener.nextValue();
+
+            JSONArray weatherListJson = cityWeatherJsonObject.getJSONArray("HeWeather data service 3.0");
+            JSONObject weatherJson = weatherListJson.getJSONObject(0);
+
+            aqiJson = readJsonObject(weatherJson, "aqi");
+            basicJson =  readJsonObject(weatherJson, "basic");
+            nowJson =  readJsonObject(weatherJson, "now");
+            suggestionJson =  readJsonObject(weatherJson, "suggestion");
+
+            daily_forecastJson = readJsonArray(weatherJson, "daily_forecast");
+            hourly_forecastJson = readJsonArray(weatherJson, "hourly_forecast");
+        } catch (JSONException e) {
+            Log.i(TAG, e.getMessage());
+        }
+        cwi = new CityWeatherItem(aqiJson, basicJson, nowJson, suggestionJson, daily_forecastJson, hourly_forecastJson);
+        return cwi;
+    }
+
+    private JSONObject readJsonObject(JSONObject jsonObject, String keyWord){
+        JSONObject j = jsonObject.optJSONObject(keyWord);
+        return j;
+    }
+    private JSONArray readJsonArray(JSONObject jsonObject, String keyWord){
+        JSONArray j = jsonObject.optJSONArray(keyWord);
+        return j;
+    }
+
+    //从JSON文件中读取天气代码信息
+    //读取天气代码信息，包括
+    public ArrayList<WeatherCode> readWeatherCodeFiles(Context mContext, String jsonFileName) {
+        ArrayList<WeatherCode> weatherItems = new ArrayList<WeatherCode>();
+        String weatherJsonStr = new String(readJsonFiles(mContext, jsonFileName));
+        Log.i(TAG, weatherJsonStr);
+        try {
+            JSONTokener jsonTokener = new JSONTokener(weatherJsonStr);
+            JSONObject weatherJsonObject = (JSONObject) jsonTokener.nextValue();
+            JSONArray weatherList = weatherJsonObject.getJSONArray("cond_info");
+            for (int i = 0; i < weatherList.length(); i++) {
+                JSONObject weathertemp = weatherList.getJSONObject(i);
+                weatherItems.add(new WeatherCode(weathertemp));
+            }
+        } catch (JSONException e) {
+            Log.i(TAG, e.getMessage());
+        }
+        return weatherItems;
+    }
+}

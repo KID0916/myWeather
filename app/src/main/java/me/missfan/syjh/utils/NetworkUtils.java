@@ -33,7 +33,7 @@ public class NetworkUtils {
         return cityJsonStr;
     }
 
-    //TODO 使用中文城市名查询时会有编码格式不匹配问题 暂不适用 仅用城市ID查询
+    //使用中文城市名查询时会有编码格式不匹配问题 暂不适用 仅用城市ID查询
     //通过城市名或拼音获取城市天气JSONStr
     /*
     public String getCityNameWeatherJsonStr(String cityName){

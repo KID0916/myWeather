@@ -28,8 +28,7 @@ public class CityWeatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_city_weather);
 
         testCityWeather = (TextView) findViewById(R.id.test_city_weather);
-        weatherCityName = getIntent().getStringExtra("cityname");
-        testCityWeather.setText(weatherCityName);
+        weatherCityName = getIntent().getStringExtra("cityId");
         Log.i(TAG, weatherCityName);
         new FetchWeatherTask().execute();
     }
