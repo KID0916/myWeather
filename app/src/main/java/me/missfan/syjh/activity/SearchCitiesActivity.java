@@ -17,11 +17,10 @@ import java.util.ArrayList;
 import me.missfan.syjh.CityListFetchr;
 import me.missfan.syjh.beans.CityItem;
 import me.missfan.syjh.R;
-import me.missfan.syjh.beans.weather.CityWeatherItem;
 
-public class CityListActivity extends AppCompatActivity {
+public class SearchCitiesActivity extends AppCompatActivity {
 
-    private static final String TAG = "CityListActivity";
+    private static final String TAG = "SearchCitiesActivity";
 
     GridView cityList;
     TextView textView;
@@ -38,7 +37,7 @@ public class CityListActivity extends AppCompatActivity {
 
     void setGridViewAdapter(){
         if(mItems != null) {
-            cityList.setAdapter(new ArrayAdapter<CityItem>(CityListActivity.this, android.R.layout.simple_gallery_item, mItems));
+            cityList.setAdapter(new ArrayAdapter<CityItem>(SearchCitiesActivity.this, android.R.layout.simple_gallery_item, mItems));
         } else {
             cityList.setAdapter(null);
         }
@@ -49,7 +48,7 @@ public class CityListActivity extends AppCompatActivity {
         @Override
         protected ArrayList<CityItem> doInBackground(Void... params) {
             ArrayList<CityItem> cityItems;
-            cityItems = new CityListFetchr().fetCityItems(CityListActivity.this);
+            cityItems = new CityListFetchr().fetCityItems(SearchCitiesActivity.this);
             return cityItems;
         }
 
@@ -61,8 +60,10 @@ public class CityListActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     CityItem c = (CityItem)(parent.getAdapter()).getItem(position);
                     String cityId = c.getId();
-                    Intent i = new Intent(CityListActivity.this , CityWeatherActivity.class);
+                    String cityName = c.getCity();
+                    Intent i = new Intent(SearchCitiesActivity.this , WeatherActivity.class);
                     i.putExtra("cityId",cityId);
+                    i.putExtra("cityName", cityName);
                     startActivity(i);
                 }
             });
@@ -72,7 +73,7 @@ public class CityListActivity extends AppCompatActivity {
     private class CityItemAdapter extends ArrayAdapter<CityItem>{
 
         public CityItemAdapter(ArrayList<CityItem> items) {
-            super(CityListActivity.this, 0, items);
+            super(SearchCitiesActivity.this, 0, items);
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {

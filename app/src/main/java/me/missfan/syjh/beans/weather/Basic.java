@@ -14,22 +14,11 @@ public class Basic {
     basic城市基本信息
      */
 
-    public Basic(JSONObject jsonObject) throws JSONException {
-            city = jsonObject.getString("city");
-            id = jsonObject.getString("id");
-            cnty = jsonObject.getString("cnty");
-            lat = jsonObject.getDouble("lat");
-            lon = jsonObject.getDouble("lon");
-            JSONObject updateJson = jsonObject.getJSONObject("update");
-            loc = updateJson.getString("loc");
-            utc = updateJson.getString("utc");
-    }
-
     private String city; //城市名称
     private String id; //城市ID
     private String cnty; //国家名称
-    private double lat; //纬度
-    private double lon; //经度
+    private String lat; //纬度
+    private String lon; //经度
     private String loc; //数据更新的当地时间
     private String utc; //数据更新的UTC时间
 
@@ -45,11 +34,11 @@ public class Basic {
         return cnty;
     }
 
-    public double getLat() {
+    public String getLat() {
         return lat;
     }
 
-    public double getLon() {
+    public String getLon() {
         return lon;
     }
 
@@ -59,5 +48,31 @@ public class Basic {
 
     public String getUtc() {
         return utc;
+    }
+
+    public Basic(JSONObject jsonObject) {
+        city = jsonObject.optString("city");
+        id = jsonObject.optString("id");
+        cnty = jsonObject.optString("cnty");
+        lat = jsonObject.optString("lat");
+        lon = jsonObject.optString("lon");
+        JSONObject updateJson = jsonObject.optJSONObject("update");
+        if (updateJson != null) {
+            loc = updateJson.optString("loc");
+            utc = updateJson.optString("utc");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Basic{" +
+                "city='" + city + '\'' +
+                ", id='" + id + '\'' +
+                ", cnty='" + cnty + '\'' +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                ", loc='" + loc + '\'' +
+                ", utc='" + utc + '\'' +
+                '}';
     }
 }

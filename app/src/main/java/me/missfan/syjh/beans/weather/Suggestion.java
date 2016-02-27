@@ -26,34 +26,50 @@ public class Suggestion {
     private String comf_brf; //舒适指数简介
     private String comf_txt; //舒适指数详情
 
-    public Suggestion(JSONObject jsonObject) throws JSONException {
-        JSONObject comfJson = jsonObject.getJSONObject("comf");
-        comf_brf = comfJson.getString("brf");
-        comf_txt = comfJson.getString("txt");
 
-        JSONObject cwJson = jsonObject.getJSONObject("cw");
-        cw_brf = cwJson.getString("brf");
-        cw_txt = cwJson.getString("txt");
+    public Suggestion(JSONObject jsonObject) {
+        JSONObject comfJson = jsonObject.optJSONObject("comf");
+        if (comfJson != null) {
+            comf_brf = comfJson.optString("brf");
+            comf_txt = comfJson.optString("txt");
+        }
 
-        JSONObject drsgJson = jsonObject.getJSONObject("drsg");
-        drsg_brf =drsgJson .getString("brf");
-        drsg_txt = drsgJson.getString("txt");
+        JSONObject cwJson = jsonObject.optJSONObject("cw");
+        if (cwJson != null) {
+            cw_brf = cwJson.optString("brf");
+            cw_txt = cwJson.optString("txt");
+        }
 
-        JSONObject fluJson = jsonObject.getJSONObject("flu");
-        flu_brf = fluJson.getString("brf");
-        flu_txt = fluJson.getString("txt");
+        JSONObject drsgJson = jsonObject.optJSONObject("drsg");
+        if (drsgJson != null) {
+            drsg_brf = drsgJson.optString("brf");
+            drsg_txt = drsgJson.optString("txt");
+        }
 
-        JSONObject sportJson = jsonObject.getJSONObject("sport");
-        sport_brf = sportJson.getString("brf");
-        sport_txt = sportJson.getString("txt");
+        JSONObject fluJson = jsonObject.optJSONObject("flu");
+        if (fluJson != null) {
+            flu_brf = fluJson.optString("brf");
+            flu_txt = fluJson.optString("txt");
+        }
 
-        JSONObject travJson = jsonObject.getJSONObject("trav");
-        trav_brf = travJson.getString("brf");
-        trav_txt = travJson.getString("txt");
+        JSONObject sportJson = jsonObject.optJSONObject("sport");
+        if (sportJson != null) {
+            sport_brf = sportJson.optString("brf");
+            sport_txt = sportJson.optString("txt");
+        }
 
-        JSONObject uvJson = jsonObject.getJSONObject("uv");
-        uv_brf = uvJson.getString("brf");
-        uv_txt = uvJson.getString("txt");
+        JSONObject travJson = jsonObject.optJSONObject("trav");
+        if (travJson != null) {
+            trav_brf = travJson.optString("brf");
+            trav_txt = travJson.optString("txt");
+        }
+
+
+        JSONObject uvJson = jsonObject.optJSONObject("uv");
+        if (uvJson != null) {
+            uv_brf = uvJson.optString("brf");
+            uv_txt = uvJson.optString("txt");
+        }
     }
 
     public String getDrsg_brf() {
@@ -110,5 +126,25 @@ public class Suggestion {
 
     public String getComf_txt() {
         return comf_txt;
+    }
+
+    @Override
+    public String toString() {
+        return "Suggestion{" +
+                "drsg_brf='" + drsg_brf + '\'' +
+                ", drsg_txt='" + drsg_txt + '\'' +
+                ", uv_brf='" + uv_brf + '\'' +
+                ", uv_txt='" + uv_txt + '\'' +
+                ", cw_brf='" + cw_brf + '\'' +
+                ", cw_txt='" + cw_txt + '\'' +
+                ", trav_brf='" + trav_brf + '\'' +
+                ", trav_txt='" + trav_txt + '\'' +
+                ", flu_brf='" + flu_brf + '\'' +
+                ", flu_txt='" + flu_txt + '\'' +
+                ", sport_brf='" + sport_brf + '\'' +
+                ", sport_txt='" + sport_txt + '\'' +
+                ", comf_brf='" + comf_brf + '\'' +
+                ", comf_txt='" + comf_txt + '\'' +
+                '}';
     }
 }

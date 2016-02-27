@@ -12,63 +12,45 @@ public class HourlyForecast {
      */
 
     private String date; //当地日期和时间
-    private int hum; //湿度(%)
-    private int pop; //降水概率
-    private int pres; //气压
-    private int tmp; //当前温度(摄氏度)
+    private String hum; //湿度(%)
+    private String pop; //降水概率
+    private String pres; //气压
+    private String tmp; //当前温度(摄氏度)
     //wind 小时风力状况
-    private int spd; //风速(Kmph)
+    private String spd; //风速(Kmph)
     private String sc; //风力等级
-    private int deg; //风向(角度)
+    private String deg; //风向(角度)
     private String dir; //风向(方向)
 
-    public HourlyForecast(JSONObject jsonObject) throws JSONException {
-        date = jsonObject.getString("date");
-        hum = jsonObject.getInt("hum");
-        pop = jsonObject.getInt("pop");
-        pres = jsonObject.getInt("pres");
-        tmp = jsonObject.getInt("tmp");
+    public HourlyForecast(JSONObject jsonObject) {
+        date = jsonObject.optString("date");
+        hum = jsonObject.optString("hum");
+        pop = jsonObject.optString("pop");
+        pres = jsonObject.optString("pres");
+        tmp = jsonObject.optString("tmp");
 
-        JSONObject windJson = jsonObject.getJSONObject("wind");
-        deg = windJson.getInt("deg");
-        dir = windJson.getString("dir");
-        sc = windJson.getString("sc");
-        spd = windJson.getInt("spd");
+        JSONObject windJson = jsonObject.optJSONObject("wind");
+        if(windJson != null) {
+            deg = windJson.optString("deg");
+            dir = windJson.optString("dir");
+            sc = windJson.optString("sc");
+            spd = windJson.optString("spd");
+        }
     }
 
-    public String getDate() {
-        return date;
-    }
 
-    public int getHum() {
-        return hum;
-    }
-
-    public int getPop() {
-        return pop;
-    }
-
-    public int getPres() {
-        return pres;
-    }
-
-    public int getTmp() {
-        return tmp;
-    }
-
-    public int getSpd() {
-        return spd;
-    }
-
-    public String getSc() {
-        return sc;
-    }
-
-    public int getDeg() {
-        return deg;
-    }
-
-    public String getDir() {
-        return dir;
+    @Override
+    public String toString() {
+        return "HourlyForecast{" +
+                "date='" + date + '\'' +
+                ", hum=" + hum +
+                ", pop=" + pop +
+                ", pres=" + pres +
+                ", tmp=" + tmp +
+                ", spd=" + spd +
+                ", sc='" + sc + '\'' +
+                ", deg=" + deg +
+                ", dir='" + dir + '\'' +
+                '}';
     }
 }
